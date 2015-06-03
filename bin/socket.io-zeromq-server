@@ -1,0 +1,39 @@
+#!/usr/bin/env node
+
+/**
+ * import(s)
+ */
+
+var debug = require('debug')('socket.io-rabbitmq-server');
+var fs = require('fs');
+var format = require('util').format;
+var msgpack = require('msgpack-js');
+var amqp = require('amqplib/callback_api');
+var program = require('commander');
+
+
+// parse argv
+
+program
+  .version(JSON.parse(fs.readFileSync(__dirname + '/../package.json', 'utf8')).version)
+  .option('--subaddress [address]', 'subscribe bind address')
+  .option('--subport [port]', 'subscriber bind port')
+  .option('--pubaddress [address]', 'publisher bind address')
+  .option('--pubport [port]', 'publisher bind port')
+  .parse(process.argv);
+
+var options = {
+  subscriber: {
+    address: program.subaddress || '127.0.0.1',
+    port: program.subport || 5672
+  },
+  publisher: {
+    address: program.pubaddress || '127.0.0.1',
+    port: program.pubport || 5673
+  }
+}
+
+debug('options : %j', options);
+
+
+//TODO: pub -sub handle
